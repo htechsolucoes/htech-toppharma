@@ -8,7 +8,7 @@ const userCard = ({ user }) => {
       flex
       items-center
       justify-between
-      py-5
+      py-3
       border-b
       border-gray-100
       "
@@ -22,8 +22,8 @@ const userCard = ({ user }) => {
       >
         <div
           className="
-          w-12
-          h-12
+          w-10.5
+          h-10.5
           rounded-full
           flex
           items-center
@@ -49,6 +49,7 @@ const userCard = ({ user }) => {
         <div>
           <h3
             className="
+            text-sm
             font-semibold
             text-gray-900
             "
@@ -58,7 +59,7 @@ const userCard = ({ user }) => {
 
           <p
             className="
-            text-sm
+            text-[12.5px]
             text-gray-500
             "
           >
