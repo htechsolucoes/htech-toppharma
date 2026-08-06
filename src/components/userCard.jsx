@@ -13,8 +13,6 @@ const userCard = ({ user }) => {
       border-gray-100
       "
     >
-
-
       <div
         className="
         flex
@@ -22,8 +20,6 @@ const userCard = ({ user }) => {
         gap-4
         "
       >
-
-
         <div
           className="
           w-12
@@ -50,10 +46,7 @@ const userCard = ({ user }) => {
 
         </div>
 
-
-
         <div>
-
           <h3
             className="
             font-semibold
@@ -63,7 +56,6 @@ const userCard = ({ user }) => {
             {user.name}
           </h3>
 
-
           <p
             className="
             text-sm
@@ -72,15 +64,8 @@ const userCard = ({ user }) => {
           >
             {user.role}
           </p>
-
-
         </div>
-
-
       </div>
-
-
-
 
       <div
         className="
@@ -89,8 +74,6 @@ const userCard = ({ user }) => {
         gap-4
         "
       >
-
-
         {
           user.available &&
           <span
@@ -103,8 +86,6 @@ const userCard = ({ user }) => {
           </span>
         }
 
-
-
         <span
           className={`
           flex
@@ -115,7 +96,6 @@ const userCard = ({ user }) => {
           rounded-full
           text-sm
           font-medium
-
           ${
             user.available
             ?
@@ -125,7 +105,6 @@ const userCard = ({ user }) => {
           }
           `}
         >
-
           <span
             className="
             w-2
@@ -142,18 +121,10 @@ const userCard = ({ user }) => {
             :
             "Indisponível"
           }
-
-
         </span>
-
-
       </div>
-
-
     </div>
-
   )
-
 }
 
 export default userCard

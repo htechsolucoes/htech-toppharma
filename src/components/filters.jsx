@@ -7,7 +7,7 @@ const Filters = ({
   setFilter
 }) => {
   return (
-    <div className="flex flex-wrap gap-3 mb-[22px]">
+    <div className="flex flex-wrap gap-3 mb-4">
 
       <div className="relative flex-1 min-w-[220px]">
         <svg

@@ -159,7 +159,10 @@ function App() {
       />
 
       <div className="mt-5">
-
+        <div class="flex w-full justify-between text-xs text-gray-500 font-semibold border-b border-gray-100 uppercase pb-2">
+          <span>Colaborador</span>
+          <span>Status</span>
+        </div>
         {filteredUsers.map(user => (
           <UserCard
             key={user.id}
