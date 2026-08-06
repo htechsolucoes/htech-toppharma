@@ -7,8 +7,8 @@ import UserCard from "./components/userCard";
 
 const currentUserMock = {
   id:1,
-  name:"Beatriz Nascimento",
-  role:"Produto · Design",
+  name:"Leandro Oliveira",
+  role:"Administrador",
   available:true,
   since:"09:14",
   color:"#5B4FE9"
@@ -19,7 +19,7 @@ const usersMock = [
   {
     id:2,
     name:"Rafael Duarte",
-    role:"Suporte N2",
+    role:"Atendente",
     available:true,
     since:"08:52",
     color:"#2E9D6B"
@@ -27,7 +27,7 @@ const usersMock = [
   {
     id:3,
     name:"Camila Torres",
-    role:"UX Design",
+    role:"Atendente",
     available:false,
     since:null,
     color:"#D96A9F"
@@ -35,7 +35,7 @@ const usersMock = [
   {
     id:4,
     name:"Thiago Almeida",
-    role:"Backend",
+    role:"Atendente",
     available:true,
     since:"09:01",
     color:"#3E7BD6"
