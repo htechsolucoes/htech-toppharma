@@ -142,6 +142,7 @@ function App() {
       <UserStatusToggle
         user={currentUser}
         toggle={toggleStatus}
+        loading={loading}
       />
 
       {loading ? (

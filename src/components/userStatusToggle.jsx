@@ -1,8 +1,9 @@
 import React from 'react'
 
-const userStatusToggle = ({
+const UserStatusToggle = ({
   user,
-  toggle
+  toggle,
+  loading = false
 }) => {
   const userInfo = user || {};
   const hasUser = Boolean(userInfo.name);
@@ -10,6 +11,39 @@ const userStatusToggle = ({
   const displayProfile = hasUser ? (userInfo.profile || userInfo.role || "") : "";
   const isAvailable = Boolean(userInfo.available);
   const canToggle = hasUser && typeof toggle === "function";
+
+  if (loading) {
+    return (
+      <div
+        className="
+        flex
+        items-center
+        justify-between
+        border
+        border-gray-200
+        rounded-xl
+        px-4
+        py-4
+        mb-7
+        bg-[#F8F9FC]
+        animate-pulse
+        "
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-10.5 h-10.5 rounded-full bg-gray-200" />
+          <div>
+            <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+            <div className="h-3 w-20 bg-gray-200 rounded" />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="h-4 w-16 bg-gray-200 rounded" />
+          <div className="w-14 h-8 rounded-full bg-gray-200" />
+        </div>
+      </div>
+    );
+  }
 
   return (
 
@@ -159,4 +193,4 @@ const userStatusToggle = ({
   )
 }
 
-export default userStatusToggle
+export default UserStatusToggle
