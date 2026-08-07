@@ -63,7 +63,7 @@ const userCard = ({ user }) => {
             text-gray-500
             "
           >
-            {user.role}
+            {user.profile}
           </p>
         </div>
       </div>

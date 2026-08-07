@@ -77,7 +77,7 @@ const userStatusToggle = ({
 
 
           <p className="text-sm text-gray-500">
-            {user.role}
+            {user.profile}
           </p>
 
 

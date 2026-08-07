@@ -1,55 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Filters from "./components/filters";
 import UserStatusToggle from "./components/userStatusToggle";
 import UserCard from "./components/userCard";
-
-
-const currentUserMock = {
-  id:1,
-  name:"Leandro Oliveira",
-  role:"Administrador",
-  available:true,
-  since:"09:14",
-  color:"#5B4FE9"
-}
-
-
-const usersMock = [
-  {
-    id:2,
-    name:"Rafael Duarte",
-    role:"Atendente",
-    available:true,
-    since:"08:52",
-    color:"#2E9D6B"
-  },
-  {
-    id:3,
-    name:"Camila Torres",
-    role:"Atendente",
-    available:false,
-    since:null,
-    color:"#D96A9F"
-  },
-  {
-    id:4,
-    name:"Thiago Almeida",
-    role:"Atendente",
-    available:true,
-    since:"09:01",
-    color:"#3E7BD6"
-  }
-]
-
+import {
+  fetchCurrentUser,
+  fetchUsers,
+  currentUserMock,
+  usersMock
+} from "./services/api";
 
 function App() {
-  const [currentUser,setCurrentUser] =
-    useState(currentUserMock);
+  const [currentUser, setCurrentUser] = useState(currentUserMock);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const [userData, usersData] = await Promise.all([
+          fetchCurrentUser(),
+          fetchUsers()
+        ]);
 
-  const [users] =
-    useState(usersMock);
+        setCurrentUser(userData);
+        setUsers(usersData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erro ao carregar dados");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, []);
 
 
   const availableCount = users.filter(
@@ -158,23 +144,28 @@ function App() {
         toggle={toggleStatus}
       />
 
-      <div className="mt-5">
-        <div class="flex w-full justify-between text-xs text-gray-500 font-semibold border-b border-gray-100 uppercase pb-2">
-          <span>Colaborador</span>
-          <span>Status</span>
+      {loading ? (
+        <div className="rounded-xl border border-gray-200 bg-white px-6 py-8 text-center text-sm text-gray-600">
+          Carregando dados...
         </div>
-        {filteredUsers.map(user => (
-          <UserCard
-            key={user.id}
-            user={user}
-          />
-        ))}
-
-
-      </div>
+      ) : error ? (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-8 text-center text-sm text-red-700">
+          {error}
+        </div>
+      ) : (
+        <div className="mt-5">
+          <div className="flex w-full justify-between text-xs text-gray-500 font-semibold border-b border-gray-100 uppercase pb-2">
+            <span>Colaborador</span>
+            <span>Status</span>
+          </div>
+          {filteredUsers.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </div>
+      )}
 
     </main>
-  )
+  );
 }
 
 export default App;
