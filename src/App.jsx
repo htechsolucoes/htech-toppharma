@@ -3,15 +3,10 @@ import { useEffect, useState } from "react";
 import Filters from "./components/filters";
 import UserStatusToggle from "./components/userStatusToggle";
 import UserCard from "./components/userCard";
-import {
-  fetchCurrentUser,
-  fetchUsers,
-  currentUserMock,
-  usersMock
-} from "./services/api";
+import { fetchCurrentUser, fetchUsers } from "./services/api";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(currentUserMock);
+  const [currentUser, setCurrentUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,6 +24,8 @@ function App() {
         setUsers(usersData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro ao carregar dados");
+        setCurrentUser(null);
+        setUsers([]);
       } finally {
         setLoading(false);
       }
@@ -53,6 +50,9 @@ function App() {
 
 
   function toggleStatus(){
+    if (!currentUser) {
+      return;
+    }
 
     setCurrentUser(prev => ({
       ...prev,

@@ -1,46 +1,12 @@
-const api = "/api";
+const api = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL
+  : "/api";
 const token = import.meta.env.VITE_API_TOKEN;
 const id = import.meta.env.VITE_ID;
 
-const currentUserMock = {
-  id: 1,
-  name: "Leandro Oliveira",
-  role: "Administrador",
-  available: true,
-  since: "09:14",
-  color: "#5B4FE9"
-};
-
-const usersMock = [
-  {
-    id: 2,
-    name: "Rafael Duarte",
-    role: "Atendente",
-    available: true,
-    since: "08:52",
-    color: "#2E9D6B"
-  },
-  {
-    id: 3,
-    name: "Camila Torres",
-    role: "Atendente",
-    available: false,
-    since: null,
-    color: "#D96A9F"
-  },
-  {
-    id: 4,
-    name: "Thiago Almeida",
-    role: "Atendente",
-    available: true,
-    since: "09:01",
-    color: "#3E7BD6"
-  }
-];
-
 async function request(path) {
   if (!api) {
-    return null;
+    throw new Error("API base URL não configurado");
   }
 
   const response = await fetch(`${api}${path}`, {
@@ -58,17 +24,15 @@ async function request(path) {
 }
 
 function normalizeUser(user) {
-  const normalized = {
+  return {
+    id: user.id,
     name: user.name,
-    profile: translateProfile(user.profile),
-    available: user.availability,
+    profile: translateProfile(user.profile || user.role),
+    available: user.available ?? user.availability,
     since: user.since || null,
     color: user.color || "#3E7BD6"
   };
-
-  return normalized;
 }
-
 
 function translateProfile(profile) {
   const profiles = {
@@ -77,17 +41,11 @@ function translateProfile(profile) {
     RESTRICTED_AGENT: "Atendente Restrito"
   };
 
-  const translated = profiles[profile];
-
-  return translated || profile;
-}   
+  return profiles[profile] || profile || "";
+}
 
 export async function fetchCurrentUser() {
   const data = await request(`/core/v1/agent/${id}`);
-
-  if (!data) {
-    return currentUserMock;
-  }
 
   return normalizeUser(data);
 }
@@ -95,13 +53,9 @@ export async function fetchCurrentUser() {
 export async function fetchUsers() {
   const data = await request("/core/v1/agent");
 
-  if (!data) {
-    return usersMock;
+  if (!Array.isArray(data)) {
+    throw new Error("Resposta de usuários inválida");
   }
 
-  return Array.isArray(data)
-    ? data.map(normalizeUser)
-    : usersMock;
+  return data.map(normalizeUser);
 }
-
-export { currentUserMock, usersMock };

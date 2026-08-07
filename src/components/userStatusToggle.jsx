@@ -4,6 +4,13 @@ const userStatusToggle = ({
   user,
   toggle
 }) => {
+  const userInfo = user || {};
+  const hasUser = Boolean(userInfo.name);
+  const displayName = hasUser ? userInfo.name : "Usuário não encontrado";
+  const displayProfile = hasUser ? (userInfo.profile || userInfo.role || "") : "";
+  const isAvailable = Boolean(userInfo.available);
+  const canToggle = hasUser && typeof toggle === "function";
+
   return (
 
     <div
@@ -34,15 +41,15 @@ const userStatusToggle = ({
           font-semibold
           "
           style={{
-            background:user.color
+            background: hasUser ? userInfo.color : "#9CA3AF"
           }}
         >
 
           {
-            user.name
+            displayName
             .split(" ")
-            .map(x=>x[0])
-            .slice(0,2)
+            .map(x => x[0])
+            .slice(0, 2)
             .join("")
           }
 
@@ -55,7 +62,7 @@ const userStatusToggle = ({
             font-semibold
             text-gray-900
             ">
-              {user.name}
+              {displayName}
             </h2>
 
 
@@ -77,7 +84,7 @@ const userStatusToggle = ({
 
 
           <p className="text-sm text-gray-500">
-            {user.profile}
+            {displayProfile}
           </p>
 
 
@@ -93,11 +100,11 @@ const userStatusToggle = ({
           className={`
             text-sm
             font-semibold
-            ${user.available ? "text-green-600" : "text-red-600"}
+            ${isAvailable ? "text-green-600" : "text-red-600"}
           `}
         >
           {
-            user.available
+            isAvailable
             ?
             "Disponível"
             :
@@ -105,7 +112,10 @@ const userStatusToggle = ({
           }
         </span>
 
-        <button onClick={toggle}>
+        <button
+          onClick={canToggle ? toggle : undefined}
+          className={canToggle ? "" : "cursor-not-allowed"}
+        >
           <div
             className={`
             w-14
@@ -113,9 +123,9 @@ const userStatusToggle = ({
             rounded-full
             p-1
             transition
-            cursor-pointer
+            ${canToggle ? "cursor-pointer" : "bg-gray-200"}
             ${
-              user.available
+              isAvailable
               ?
               "bg-indigo-600"
               :
@@ -133,7 +143,7 @@ const userStatusToggle = ({
               transition-transform
 
               ${
-                user.available
+                isAvailable
                 ?
                 "translate-x-6"
                 :
