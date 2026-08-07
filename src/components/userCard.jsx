@@ -83,7 +83,7 @@ const userCard = ({ user }) => {
             text-gray-400
             "
           >
-            desde {user.since}
+            desde 09:04
           </span>
         }
 

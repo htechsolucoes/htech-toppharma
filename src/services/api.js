@@ -1,6 +1,6 @@
 const api = import.meta.env.PROD
   ? import.meta.env.VITE_API_URL
-  : "/api";
+  : "";
 const token = import.meta.env.VITE_API_TOKEN;
 const id = import.meta.env.VITE_ID;
 
@@ -45,13 +45,13 @@ function translateProfile(profile) {
 }
 
 export async function fetchCurrentUser() {
-  const data = await request(`/core/v1/agent/${id}`);
+  const data = await request(`/api/core/v1/agent/${id}`);
 
   return normalizeUser(data);
 }
 
 export async function fetchUsers() {
-  const data = await request("/core/v1/agent");
+  const data = await request("/api/core/v1/agent");
 
   if (!Array.isArray(data)) {
     throw new Error("Resposta de usuários inválida");
