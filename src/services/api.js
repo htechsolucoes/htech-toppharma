@@ -1,21 +1,6 @@
-const api = import.meta.env.PROD ? import.meta.env.VITE_API_URL : "";
-const token = import.meta.env.VITE_API_TOKEN;
-const id = import.meta.env.VITE_ID;
-
 async function request(path) {
-  if (import.meta.env.PROD && !api) {
-    throw new Error("API base URL não configurado");
-  }
-
-  // Em dev, prefixa com /api só pra bater com a regra do proxy do Vite.
-  // Em prod, vai direto pro path real (sem /api, que não existe na API).
-  const finalPath = import.meta.env.PROD ? path : `/api${path}`;
-
-  const response = await fetch(`${api}${finalPath}`, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept": "application/json"
-    }
+  const response = await fetch(`/api${path}`, {
+    headers: { "Accept": "application/json" }
   });
 
   if (!response.ok) {
@@ -43,17 +28,17 @@ function translateProfile(profile) {
     AGENT: "Atendente",
     RESTRICTED_AGENT: "Atendente Restrito"
   };
-
   return profiles[profile] || profile || "";
 }
 
 export async function fetchCurrentUser() {
-  const data = await request(`/core/v1/agent/${id}`);
+  const id = import.meta.env.VITE_ID;
+  const data = await request(`/agent/${id}`);
   return normalizeUser(data);
 }
 
 export async function fetchUsers() {
-  const data = await request("/core/v1/agent");
+  const data = await request("/agent");
   if (!Array.isArray(data)) {
     throw new Error("Resposta de usuários inválida");
   }
