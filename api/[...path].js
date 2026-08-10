@@ -4,13 +4,20 @@ export default async function handler(req, res) {
       ? req.query.path.join("/")
       : req.query.path || "";
 
+    console.log("PATH RECEBIDO:", path);
+    console.log("CRM_API_URL:", process.env.CRM_API_URL);
+    console.log("CRM_TOKEN EXISTE:", !!process.env.CRM_TOKEN);
+
     if (!path.startsWith("core/v1/agent")) {
       return res.status(404).json({
-        error: "Endpoint não permitido"
+        error: "Endpoint não permitido",
+        path
       });
     }
 
     const apiUrl = `${process.env.CRM_API_URL}/${path}`;
+
+    console.log("CHAMANDO:", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: req.method,
@@ -20,6 +27,8 @@ export default async function handler(req, res) {
       }
     });
 
+    console.log("STATUS CRM:", response.status);
+
     const contentType = response.headers.get("content-type");
 
     const data = contentType?.includes("application/json")
@@ -27,11 +36,13 @@ export default async function handler(req, res) {
       : await response.text();
 
     return res.status(response.status).json(data);
+
   } catch (error) {
-    console.error("Erro na Vercel Function:", error);
+    console.error("ERRO FUNCTION:", error);
 
     return res.status(500).json({
-      error: "Erro ao comunicar com a API do CRM"
+      error: "Erro ao comunicar com a API do CRM",
+      message: error.message
     });
   }
 }
