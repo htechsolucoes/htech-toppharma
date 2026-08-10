@@ -5,7 +5,10 @@ async function request(path) {
 
   if (!response.ok) {
     const bodyText = await response.clone().text().catch(() => "");
-    throw new Error(`API request failed: ${response.status} ${response.statusText} - ${bodyText}`);
+
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText} - ${bodyText}`
+    );
   }
 
   return response.json();
@@ -42,5 +45,6 @@ export async function fetchUsers() {
   if (!Array.isArray(data)) {
     throw new Error("Resposta de usuários inválida");
   }
+
   return data.map(normalizeUser);
 }
