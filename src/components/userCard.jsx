@@ -76,7 +76,7 @@ const userCard = ({ user }) => {
         "
       >
         {
-          user.available &&
+          user.available === "AVAILABLE" &&
           <span
             className="
             text-sm
@@ -98,7 +98,7 @@ const userCard = ({ user }) => {
           text-sm
           font-medium
           ${
-            user.available
+            user.available === "AVAILABLE"
             ?
             "bg-green-50 text-green-700"
             :
@@ -116,7 +116,7 @@ const userCard = ({ user }) => {
           />
 
           {
-            user.available
+            user.available === "AVAILABLE"
             ?
             "Disponível"
             :

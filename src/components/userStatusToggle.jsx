@@ -9,7 +9,7 @@ const UserStatusToggle = ({
   const hasUser = Boolean(userInfo.name);
   const displayName = hasUser ? userInfo.name : "Usuário não encontrado";
   const displayProfile = hasUser ? (userInfo.profile || userInfo.role || "") : "";
-  const isAvailable = Boolean(userInfo.available);
+  const isAvailable = userInfo.available === "AVAILABLE";
   const canToggle = hasUser && typeof toggle === "function";
 
   if (loading) {

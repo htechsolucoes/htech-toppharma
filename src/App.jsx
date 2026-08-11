@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import Filters from "./components/filters";
 import UserStatusToggle from "./components/userStatusToggle";
 import UserCard from "./components/userCard";
-import { fetchCurrentUser, fetchUsers } from "./services/api";
+import { fetchCurrentUser, fetchUsers, updateUserAvailability } from "./services/api";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loadAgentsError, setloadAgentsError] = useState("");
+  const [toggleError, setToggleError] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -23,7 +24,7 @@ function App() {
         setCurrentUser(userData);
         setUsers(usersData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Erro ao carregar dados");
+        setLoadError(err instanceof Error ? err.message : "Erro ao carregar dados");
         setCurrentUser(null);
         setUsers([]);
       } finally {
@@ -34,74 +35,89 @@ function App() {
     loadData();
   }, []);
 
-
   const availableCount = users.filter(
-    user => user.available
+    user => user.available === "AVAILABLE"
   ).length;
-
 
   const [search,setSearch] =
     useState("");
 
-
   const [filter,setFilter] =
     useState("disponivel");
 
-
-
-  function toggleStatus(){
-    if (!currentUser) {
-      return;
-    }
-
-    setCurrentUser(prev => ({
-      ...prev,
-      available: !prev.available,
-      since:
-        new Date()
-        .toLocaleTimeString("pt-BR",{
-          hour:"2-digit",
-          minute:"2-digit"
-        })
-    }));
-
+async function toggleStatus() {
+  if (!currentUser) {
+    return;
   }
 
+  const previousUser = currentUser;
 
+  const newAvailability =
+    currentUser.available === "AVAILABLE"
+      ? "UNAVAILABLE"
+      : "AVAILABLE";
+
+  setToggleError("");
+
+  // Atualiza a UI imediatamente
+  setCurrentUser(prev => ({
+    ...prev,
+    available: newAvailability,
+    since:
+      newAvailability === "AVAILABLE"
+        ? new Date().toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        : null
+  }));
+
+  try {
+    // Faz a requisição depois da UI já ter mudado
+    await updateUserAvailability(
+      currentUser.userId,
+      newAvailability
+    );
+  } catch (err) {
+    console.error("Erro ao atualizar status:", err);
+
+    // Se a API falhar, volta ao estado anterior
+    setCurrentUser(previousUser);
+
+    setToggleError(
+      "Não foi possível atualizar o status. Tente novamente."
+    );
+  }
+}
 
   const filteredUsers = users.filter(user => {
-
+    // Não mostra o usuário atual na lista
+    if (currentUser && user.id === currentUser.id) {
+      return false;
+    }
 
     const matchSearch =
       user.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
+        .toLowerCase()
+        .includes(search.toLowerCase())
       ||
-      user.role
-      .toLowerCase()
-      .includes(search.toLowerCase());
+      user.profile
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
-
-    if(!matchSearch)
+    if (!matchSearch)
       return false;
 
+    if (filter === "disponivel")
+      return user.available === "AVAILABLE";
 
-    if(filter==="disponivel")
-      return user.available;
-
-
-    if(filter==="indisponivel")
-      return !user.available;
-
+    if (filter === "indisponivel")
+      return user.available === "UNAVAILABLE";
 
     return true;
-
   });
 
-
-
   return (
-
     <main
       className="
       max-w-[1180px]
@@ -149,9 +165,9 @@ function App() {
         <div className="rounded-xl border border-gray-200 bg-white px-6 py-8 text-center text-sm text-gray-600">
           Carregando dados...
         </div>
-      ) : error ? (
+      ) : loadAgentsError ? (
         <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-8 text-center text-sm text-red-700">
-          {error}
+          {loadAgentsError}
         </div>
       ) : (
         <div className="mt-5">
