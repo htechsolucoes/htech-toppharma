@@ -59,7 +59,6 @@ async function toggleStatus() {
 
   setToggleError("");
 
-  // Atualiza a UI imediatamente
   setCurrentUser(prev => ({
     ...prev,
     available: newAvailability,
@@ -73,7 +72,6 @@ async function toggleStatus() {
   }));
 
   try {
-    // Faz a requisição depois da UI já ter mudado
     await updateUserAvailability(
       currentUser.userId,
       newAvailability
@@ -81,7 +79,6 @@ async function toggleStatus() {
   } catch (err) {
     console.error("Erro ao atualizar status:", err);
 
-    // Se a API falhar, volta ao estado anterior
     setCurrentUser(previousUser);
 
     setToggleError(
@@ -91,7 +88,12 @@ async function toggleStatus() {
 }
 
 async function toggleUserAvailability(user) {
+  console.log("1 - CLICOU NO TOGGLE");
+  console.log("2 - USUÁRIO:", user);
+  console.log("3 - IS OWNER:", currentUser?.isOwner);
+
   if (!currentUser?.isOwner || !user) {
+    console.log("4 - BLOQUEADO");
     return;
   }
 
@@ -102,9 +104,9 @@ async function toggleUserAvailability(user) {
       ? "UNAVAILABLE"
       : "AVAILABLE";
 
-  setToggleError("");
+  console.log("5 - NOVO STATUS:", newAvailability);
+  console.log("6 - USER ID:", user.userId);
 
-  // Atualiza a UI imediatamente
   setUsers(prevUsers =>
     prevUsers.map(item =>
       item.id === user.id
@@ -124,15 +126,17 @@ async function toggleUserAvailability(user) {
   );
 
   try {
-    // Atualiza o usuário específico na API
+    console.log("7 - ENVIANDO PUT...");
+
     await updateUserAvailability(
       user.userId,
       newAvailability
     );
-  } catch (err) {
-    console.error("Erro ao atualizar status do usuário:", err);
 
-    // Volta ao estado anterior se a API falhar
+    console.log("8 - PUT CONCLUÍDO");
+  } catch (err) {
+    console.error("9 - ERRO NO PUT:", err);
+
     setUsers(prevUsers =>
       prevUsers.map(item =>
         item.id === user.id
@@ -144,15 +148,10 @@ async function toggleUserAvailability(user) {
           : item
       )
     );
-
-    setToggleError(
-      "Não foi possível atualizar o status. Tente novamente."
-    );
   }
 }
 
   const filteredUsers = users.filter(user => {
-    // Não mostra o usuário atual na lista
     if (currentUser && user.id === currentUser.id) {
       return false;
     }

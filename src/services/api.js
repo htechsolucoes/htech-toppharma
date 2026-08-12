@@ -58,6 +58,9 @@ export async function fetchUsers() {
 }
 
 export async function updateUserAvailability(userId, availability) {
+  console.log("API - userId:", userId);
+  console.log("API - availability:", availability);
+
   const response = await fetch(`/api/agent/${userId}`, {
     method: "PUT",
     headers: {
@@ -65,17 +68,26 @@ export async function updateUserAvailability(userId, availability) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      availability
+      availability,
+      fields: ["Availability"]
     })
   });
 
+  console.log("API - status:", response.status);
+
   if (!response.ok) {
     const bodyText = await response.clone().text().catch(() => "");
+
+    console.error("API - erro:", bodyText);
 
     throw new Error(
       `API request failed: ${response.status} ${response.statusText} - ${bodyText}`
     );
   }
 
-  return response.json().catch(() => ({}));
+  const data = await response.json().catch(() => ({}));
+
+  console.log("API - resposta:", data);
+
+  return data;
 }
