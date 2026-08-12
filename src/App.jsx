@@ -22,9 +22,9 @@ function App() {
         ]);
 
         setCurrentUser(userData);
-        setUsers(usersData);
+        setUsers(usersData);  
       } catch (err) {
-        setLoadError(err instanceof Error ? err.message : "Erro ao carregar dados");
+        setloadAgentsError(err instanceof Error ? err.message : "Erro ao carregar dados");
         setCurrentUser(null);
         setUsers([]);
       } finally {
@@ -43,7 +43,7 @@ function App() {
     useState("");
 
   const [filter,setFilter] =
-    useState("disponivel");
+    useState("todos");
 
 async function toggleStatus() {
   if (!currentUser) {
@@ -83,6 +83,67 @@ async function toggleStatus() {
 
     // Se a API falhar, volta ao estado anterior
     setCurrentUser(previousUser);
+
+    setToggleError(
+      "Não foi possível atualizar o status. Tente novamente."
+    );
+  }
+}
+
+async function toggleUserAvailability(user) {
+  if (!currentUser?.isOwner || !user) {
+    return;
+  }
+
+  const previousAvailability = user.available;
+
+  const newAvailability =
+    user.available === "AVAILABLE"
+      ? "UNAVAILABLE"
+      : "AVAILABLE";
+
+  setToggleError("");
+
+  // Atualiza a UI imediatamente
+  setUsers(prevUsers =>
+    prevUsers.map(item =>
+      item.id === user.id
+        ? {
+            ...item,
+            available: newAvailability,
+            since:
+              newAvailability === "AVAILABLE"
+                ? new Date().toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  })
+                : null
+          }
+        : item
+    )
+  );
+
+  try {
+    // Atualiza o usuário específico na API
+    await updateUserAvailability(
+      user.userId,
+      newAvailability
+    );
+  } catch (err) {
+    console.error("Erro ao atualizar status do usuário:", err);
+
+    // Volta ao estado anterior se a API falhar
+    setUsers(prevUsers =>
+      prevUsers.map(item =>
+        item.id === user.id
+          ? {
+              ...item,
+              available: previousAvailability,
+              since: user.since || null
+            }
+          : item
+      )
+    );
 
     setToggleError(
       "Não foi possível atualizar o status. Tente novamente."
@@ -176,7 +237,12 @@ async function toggleStatus() {
             <span>Status</span>
           </div>
           {filteredUsers.map((user) => (
-            <UserCard key={user.id} user={user} />
+            <UserCard
+              key={user.id}
+              user={user}
+              canEdit={currentUser?.isOwner === true}
+              onToggle={() => toggleUserAvailability(user)}
+            />
           ))}
         </div>
       )}

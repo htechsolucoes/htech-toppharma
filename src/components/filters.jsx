@@ -74,6 +74,10 @@ const Filters = ({
             focus:border-indigo-500
           "
         >
+          <option value="todos">
+            Status: Todos
+          </option>
+          
           <option value="disponivel">
             Status: Disponíveis
           </option>
@@ -82,9 +86,7 @@ const Filters = ({
             Status: Indisponíveis
           </option>
 
-          <option value="todos">
-            Status: Todos
-          </option>
+
         </select>
 
         <svg

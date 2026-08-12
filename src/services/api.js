@@ -23,6 +23,7 @@ function normalizeUser(user) {
     name: user.name,
     profile: translateProfile(user.profile || user.role),
     available: user.available || user.availability,
+    isOwner: user.isOwner === true,
     since: user.since || null,
     color: user.color || "#3E7BD6"
   };
@@ -39,7 +40,7 @@ function translateProfile(profile) {
 }
 
 export async function fetchCurrentUser() {
-  const id = import.meta.env.VITE_ID;
+  const id = "176c241f-56b4-42f8-b992-df71c24d6298";
 
   const data = await request(`/agent/${id}`);
 

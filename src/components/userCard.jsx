@@ -1,8 +1,9 @@
-import React from 'react'
+import React from "react";
 
-const userCard = ({ user }) => {
+const UserCard = ({ user, canEdit = false, onToggle }) => {
+  const isAvailable = user.available === "AVAILABLE";
+
   return (
-
     <div
       className="
       flex
@@ -32,18 +33,14 @@ const userCard = ({ user }) => {
           font-bold
           "
           style={{
-            background:user.color
+            background: user.color
           }}
         >
-
-          {
-            user.name
+          {user.name
             .split(" ")
-            .map(x=>x[0])
-            .slice(0,2)
-            .join("")
-          }
-
+            .map(x => x[0])
+            .slice(0, 2)
+            .join("")}
         </div>
 
         <div>
@@ -75,8 +72,7 @@ const userCard = ({ user }) => {
         gap-4
         "
       >
-        {
-          user.available === "AVAILABLE" &&
+        {isAvailable && (
           <span
             className="
             text-sm
@@ -85,7 +81,7 @@ const userCard = ({ user }) => {
           >
             desde 09:04
           </span>
-        }
+        )}
 
         <span
           className={`
@@ -98,11 +94,9 @@ const userCard = ({ user }) => {
           text-sm
           font-medium
           ${
-            user.available === "AVAILABLE"
-            ?
-            "bg-green-50 text-green-700"
-            :
-            "bg-gray-100 text-gray-600"
+            isAvailable
+              ? "bg-green-50 text-green-700"
+              : "bg-gray-100 text-gray-600"
           }
           `}
         >
@@ -115,17 +109,51 @@ const userCard = ({ user }) => {
             "
           />
 
-          {
-            user.available === "AVAILABLE"
-            ?
-            "Disponível"
-            :
-            "Indisponível"
-          }
+          {isAvailable
+            ? "Disponível"
+            : "Indisponível"}
         </span>
+
+        {canEdit && (
+          <button
+            type="button"
+            onClick={onToggle}
+            className="cursor-pointer"
+          >
+            <div
+              className={`
+              w-14
+              h-8
+              rounded-full
+              p-1
+              transition
+              ${
+                isAvailable
+                  ? "bg-indigo-600"
+                  : "bg-gray-300"
+              }
+              `}
+            >
+              <div
+                className={`
+                w-6
+                h-6
+                bg-white
+                rounded-full
+                transition-transform
+                ${
+                  isAvailable
+                    ? "translate-x-6"
+                    : "translate-x-0"
+                }
+                `}
+              />
+            </div>
+          </button>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default userCard
+export default UserCard;
