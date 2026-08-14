@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserCard = ({ user, canEdit = false, onToggle }) => {
+const UserCard = ({ user, onToggle }) => {
   const isAvailable = user.available === "AVAILABLE";
 
   return (
@@ -114,43 +114,42 @@ const UserCard = ({ user, canEdit = false, onToggle }) => {
             : "Indisponível"}
         </span>
 
-        {canEdit && (
-          <button
-            type="button"
-            onClick={onToggle}
-            className="cursor-pointer"
+        <button
+          type="button"
+          onClick={onToggle}
+          className="cursor-pointer"
+          aria-label={`Alternar disponibilidade de ${user.name}`}
+        >
+          <div
+            className={`
+            w-14
+            h-8
+            rounded-full
+            p-1
+            transition
+            ${
+              isAvailable
+                ? "bg-indigo-600"
+                : "bg-gray-300"
+            }
+            `}
           >
             <div
               className={`
-              w-14
-              h-8
+              w-6
+              h-6
+              bg-white
               rounded-full
-              p-1
-              transition
+              transition-transform
               ${
                 isAvailable
-                  ? "bg-indigo-600"
-                  : "bg-gray-300"
+                  ? "translate-x-6"
+                  : "translate-x-0"
               }
               `}
-            >
-              <div
-                className={`
-                w-6
-                h-6
-                bg-white
-                rounded-full
-                transition-transform
-                ${
-                  isAvailable
-                    ? "translate-x-6"
-                    : "translate-x-0"
-                }
-                `}
-              />
-            </div>
-          </button>
-        )}
+            />
+          </div>
+        </button>
       </div>
     </div>
   );
