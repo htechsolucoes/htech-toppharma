@@ -117,7 +117,8 @@ function App() {
     }
   }
 
-  const filteredUsers = users.filter(user => {
+const filteredUsers = users
+  .filter(user => {
     const matchSearch =
       user.name
         .toLowerCase()
@@ -139,6 +140,15 @@ function App() {
     }
 
     return true;
+  })
+  .sort((a, b) => {
+    const getPriority = user => {
+      if (user.isOwner) return 0;
+      if (user.profile === "Administrador") return 1;
+      return 2;
+    };
+
+    return getPriority(a) - getPriority(b);
   });
 
   return (

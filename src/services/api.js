@@ -23,6 +23,7 @@ function normalizeUser(user) {
     name: user.name,
     profile: translateProfile(user.profile || user.role),
     available: user.available || user.availability,
+    isOwner: user.isOwner === true,
     since: user.since || null,
     color: user.color || "#3E7BD6"
   };
